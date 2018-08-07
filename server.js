@@ -18,16 +18,12 @@ router.post('/hook', (ctx, next) => {
     let sig = ctx.request.headers['stripe-signature'];
 
     try {
-        let event = stripe.webhooks.constructEvent(ctx.request.rawBody, sig, Config.ENDPOINT_SECRET)
-        console.log(event);
+        let event = stripe.webhooks.constructEvent(ctx.request.rawBody, sig, Config.ENDPOINT_SECRET);
         if (event.type === 'charge.succeeded') {
             let today = new Date();
             let data = event.data.object;
-            let email = makeSuccessEmail(data.metadata.customer_name, data.amount, data.metadata['Quote/Invoice #'],
-                data.card.brand, data.card.last4, data.card.name, today.getMonth()+1 + '/' + today.getDate() + '/' +
-                today.getFullYear(), data.metadata['Company Name'], data.metadata.Description);
+            let email = makeSuccessEmail(data);
             console.log(email);
-            console.log(data);
         } else {
 
         }
@@ -41,12 +37,14 @@ router.post('/hook', (ctx, next) => {
     }
 });
 
-let makeSuccessEmail = (name, amount, invoice, cardType, lastFour, owner, date, company, description) => {
-    return "<p>Dear " + name + "</p>\n\n<p>Here is the receipt for your payment of <b>$" + amount + "</b>" +
-        " referencing quote/invoice number <b>" + invoice + "</b> charged to a <b>" + cardType + "</b> card " +
-        "ending in <b>" + lastFour + "</b> and belonging to <b>" + owner + "</b> on <b>" + date + "</b>.</p>\n\n" +
+let makeSuccessEmail = (data) => {
+    let today = new Date();
+    let date = today.getMonth()+1 + '/' + today.getDate() + '/' + today.getFullYear();
+    return "<p>Dear " + data.metadata.customer_name + "</p>\n\n<p>Here is the receipt for your payment of <b>$" + data.amount + "</b>" +
+        " referencing quote/invoice number <b>" + data.metadata['Quote/Invoice #'] + "</b> charged to a <b>" + data.card.brand + "</b> card " +
+        "ending in <b>" + data.card.last4 + "</b> and belonging to <b>" + data.card.name + "</b> on <b>" + date + "</b>.</p>\n\n" +
         "<p>The following company name and description (if entered) goes along with your charge: " +
-        "<b>" + company + "</b>; <b>" + description + "</b>.</p>\n\n" +
+        "<b>" + data.metadata['Company Name'] + "</b>; <b>" + data.metadata.Description + "</b>.</p>\n\n" +
         "<p>We appreciate your patronage and look forward to working with you in the future!</p>\n\n" +
         "<p>-- The Apollo Mapping Team</p>";
 };
