@@ -1,0 +1,8 @@
+{
+  "name": "stripe-notifier",
+  "version": "1.0.0",
+  "description": "A simple webhook endpoint to send emails for stripe events",
+  "main": "server.js",
+  "author": "Omer <eldaromer@gmail.com>",
+  "license": "MIT"
+}
