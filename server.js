@@ -6,6 +6,7 @@ const bodyParser = require('koa-bodyparser');
 const Config = require('./Config');
 const stripe = require('stripe')(Config.STRIPE_SECRET);
 const {google} = require('googleapis');
+const auth = require('./auth');
 
 let oauthClient = '';
 
