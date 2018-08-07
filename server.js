@@ -14,7 +14,7 @@ app.use(bodyParser());
 app.use(cors());
 
 router.post('/hook', (ctx, next) => {
-    console.log(ctx.request.body);
+    console.log(ctx.request.body.data.object);
 
     ctx.status = 200;
     ctx.body = {
