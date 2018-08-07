@@ -21,7 +21,12 @@ router.post('/hook', (ctx, next) => {
         let event = stripe.webhooks.constructEvent(ctx.request.rawBody, sig, Config.ENDPOINT_SECRET)
         console.log(event);
         if (event.type === 'charge.succeeded') {
+            let today = new Date();
             let data = event.data.object;
+            let email = makeSuccessEmail(data.metadata.customer_name, data.amount, data.metadata['Quote/Invoice #'],
+                data.card.brand, data.card.last4, data.card.name, today.getMonth()+1 + '/' + today.getDate() + '/' +
+                today.getFullYear(), data.metadata['Company Name'], data.metadata.Description);
+            console.log(email);
             console.log(data);
         } else {
 
