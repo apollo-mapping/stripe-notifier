@@ -55,8 +55,8 @@ let makeErrorEmail = (data) => {
     return "<p>Dear " + data.metadata.customer_name + ",</p>\n\n" +
         "<p>There was a failed charge to your credit card!</p>\n\n" +
         "<p>Specifically, it was a failed payment of <b>$" + data.amount + "</b> referencing quite/invoice number " +
-        "<b>" + data.metadata['Quote/Invoice #'] + "</b> charged to a <b>\" + data.card.brand + \"</b> card  ending " +
-        "in <b>" + data.card.last4 + "</b> and belonging to <b>\" + data.card.name + \"</b> on <b>\" + date + \"</b>.</p>\n\n" +
+        "<b>" + data.metadata['Quote/Invoice #'] + "</b> charged to a <b>" + data.card.brand + "</b> card  ending " +
+        "in <b>" + data.card.last4 + "</b> and belonging to <b>" + data.card.name + "</b> on <b>" + date + "</b>.</p>\n\n" +
         "<p>The following company name and description (if entered) goes along with your failed charge: " +
         "<b>" + data.metadata['Company Name'] + "</b>; <b>" + data.metadata.Description + "</b>.</p>\n\n" +
         "<p>And this is the charge failure  message: <b>" + data.failure_message + "</b></p>\n\n" +
