@@ -24,8 +24,6 @@ router.post('/hook', (ctx, next) => {
         ctx.throw(400, e);
     }
 
-    console.log(ctx.request.body.data.object);
-
     ctx.status = 200;
     ctx.body = {
         message: 'Mamma mia'
