@@ -7,6 +7,12 @@ const Config = require('./Config');
 const stripe = require('stripe')(Config.STRIPE_SECRET);
 const {google} = require('googleapis');
 
+let oauthClient = '';
+
+auth((authClient) => {
+    oauthClient = authClient;
+});
+
 const app = new Koa();
 let router = new Router();
 
@@ -22,9 +28,13 @@ router.post('/hook', (ctx, next) => {
         let data = event.data.object;
         if (event.type === 'charge.succeeded') {
             let email = makeSuccessEmail(data);
+            let subject = 'Apollo Mapping Payment Receipt: #' + data.metadata['Quote/Invoice #'];
+            sendEmail(subject, email, data.metadata.customer_email);
             console.log(email);
         } else {
             let email = makeErrorEmail(data);
+            let subject = 'Failed Apollo Mapping Charge: #' + data.metadata['Quote/Invoice #'];
+            sendEmail(subject, email, data.metadata.customer_email);
             console.log(email);
         }
     } catch (e) {
@@ -61,6 +71,41 @@ let makeErrorEmail = (data) => {
         "<b>" + data.metadata['Company Name'] + "</b>; <b>" + data.metadata.Description + "</b>.</p>\n\n" +
         "<p>And this is the charge failure  message: <b>" + data.failure_message + "</b></p>\n\n" +
         "<p>-- The Apollo Mapping Team</p>";
+};
+
+let sendEmail = (subject, content, to) => {
+    let gmailClass = google.gmail('v1');
+
+    let email_lines = [];
+
+    email_lines.push('From: "' + Config.mail.from + '" <' + Config.mail.fromEmail + '>');
+    email_lines.push('To: ' + to);
+    email_lines.push('Content-type: text/html;charset=iso-8859-1');
+    email_lines.push('MIME-Version: 1.0');
+    email_lines.push('Subject: ' + subject);
+    email_lines.push('');
+    content = content.split('\n');
+    for (let con of content)
+        email_lines.push(con);
+
+    let email = email_lines.join('\r\n').trim();
+
+    let base64EncodedEmail = new Buffer(email).toString('base64');
+    base64EncodedEmail = base64EncodedEmail.replace(/\+/g, '-').replace(/\//g, '_');
+
+    gmailClass.users.messages.send({
+        auth: oauthClient,
+        userId: 'me',
+        resource: {
+            raw: base64EncodedEmail
+        }
+    }, (err, results) => {
+        if (err) {
+            console.log('err:', err);
+        } else {
+            console.log(results);
+        }
+    });
 };
 
 app.use(router.routes());
