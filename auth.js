@@ -5,7 +5,7 @@ const {google} = require('googleapis');
 
 const SCOPES = ['https://www.googleapis.com/auth/gmail.send'];
 const TOKEN_DIR = (process.env.HOME || process.env.HOMEPATH ||
-    process.env.USERPROFILE) + '/.credentials/';
+    process.env.USERPROFILE) + '/.credentials/stripe-notifier';
 console.log(TOKEN_DIR);
 const TOKEN_PATH = TOKEN_DIR + 'gmail-token.json';
 
