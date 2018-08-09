@@ -31,11 +31,13 @@ router.post('/hook', (ctx, next) => {
             let email = makeSuccessEmail(data);
             let subject = 'Apollo Mapping Payment Receipt: #' + data.metadata['Quote/Invoice #'];
             sendEmail(subject, email, data.metadata.customer_email);
+            sendEmail(subject, email, "sales@apollomapping.com");
             console.log(email);
         } else {
             let email = makeErrorEmail(data);
             let subject = 'Failed Apollo Mapping Charge: #' + data.metadata['Quote/Invoice #'];
             sendEmail(subject, email, data.metadata.customer_email);
+            sendEmail(subject, email, "sales@apollomapping.com");
             console.log(email);
         }
     } catch (e) {
