@@ -53,7 +53,7 @@ router.post('/hook', (ctx, next) => {
 let makeSuccessEmail = (data) => {
     let today = new Date();
     let date = today.getMonth()+1 + '/' + today.getDate() + '/' + today.getFullYear();
-    return "<p>Dear " + data.metadata.customer_name + "</p>\n\n<p>Here is the receipt for your payment of <b>$" + String((data.amount).toFixed(2)) + "</b>" +
+    return "<p>Dear " + data.metadata.customer_name + "</p>\n\n<p>Here is the receipt for your payment of <b>$" + String((data.amount/100).toFixed(2)) + "</b>" +
         " referencing quote/invoice number <b>" + data.metadata['Quote/Invoice #'] + "</b> charged to a <b>" + data.card.brand + "</b> card " +
         "ending in <b>" + data.card.last4 + "</b> and belonging to <b>" + data.card.name + "</b> on <b>" + date + "</b>.</p>\n\n" +
         "<p>The following company name and description (if entered) goes along with your charge: " +
@@ -67,7 +67,7 @@ let makeErrorEmail = (data) => {
     let date = today.getMonth()+1 + '/' + today.getDate() + '/' + today.getFullYear();
     return "<p>Dear " + data.metadata.customer_name + ",</p>\n\n" +
         "<p>There was a failed charge to your credit card!</p>\n\n" +
-        "<p>Specifically, it was a failed payment of <b>$" + String((data.amount).toFixed(2)) + "</b> referencing quite/invoice number " +
+        "<p>Specifically, it was a failed payment of <b>$" + String((data.amount/100).toFixed(2)) + "</b> referencing quite/invoice number " +
         "<b>" + data.metadata['Quote/Invoice #'] + "</b> charged to a <b>" + data.card.brand + "</b> card  ending " +
         "in <b>" + data.card.last4 + "</b> and belonging to <b>" + data.card.name + "</b> on <b>" + date + "</b>.</p>\n\n" +
         "<p>The following company name and description (if entered) goes along with your failed charge: " +
