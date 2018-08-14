@@ -31,13 +31,11 @@ router.post('/hook', (ctx, next) => {
             let email = makeSuccessEmail(data);
             let subject = 'Apollo Mapping Payment Receipt: #' + data.metadata['Quote/Invoice #'];
             sendEmail(subject, email, data.metadata.customer_email);
-            sendEmail(subject, email, "sales@apollomapping.com");
             console.log(email);
         } else {
             let email = makeErrorEmail(data);
             let subject = 'Failed Apollo Mapping Charge: #' + data.metadata['Quote/Invoice #'];
             sendEmail(subject, email, data.metadata.customer_email);
-            sendEmail(subject, email, "sales@apollomapping.com");
             console.log(email);
         }
     } catch (e) {
@@ -83,6 +81,7 @@ let sendEmail = (subject, content, to) => {
 
     email_lines.push('From: "' + Config.mail.from + '" <' + Config.mail.fromEmail + '>');
     email_lines.push('To: ' + to);
+    email_lines.push('Cc: sales@apollomapping.com');
     email_lines.push('Content-type: text/html;charset=iso-8859-1');
     email_lines.push('MIME-Version: 1.0');
     email_lines.push('Subject: ' + subject);
